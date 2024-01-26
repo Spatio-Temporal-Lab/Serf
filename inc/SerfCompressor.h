@@ -21,7 +21,7 @@ private:
     b64 storedErasedLongValue = doubleToLongBits(NaN);
 
 public:
-    SerfCompressor(int alpha, double errorBound);
+    SerfCompressor(double errorBound);
 
     b64 doubleToLongBits(double value);
 

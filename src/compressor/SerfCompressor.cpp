@@ -1,8 +1,8 @@
 #include "SerfCompressor.h"
 
-SerfCompressor::SerfCompressor(int alpha, double errorBound) {
+SerfCompressor::SerfCompressor(double errorBound) {
     static_assert(sizeof(unsigned long) == 8);
-    fAlpha = 1075 - Elf64Utils::getFAlpha(alpha);
+    fAlpha = (int) ceil(std::abs(log(maxDiff) / log(2)));
     maxDiff = errorBound;
 }
 
