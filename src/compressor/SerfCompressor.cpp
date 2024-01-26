@@ -1,9 +1,9 @@
 #include "SerfCompressor.h"
 
-SerfCompressor::SerfCompressor(int alpha) {
+SerfCompressor::SerfCompressor(int alpha, double errorBound) {
     static_assert(sizeof(unsigned long) == 8);
     fAlpha = 1075 - Elf64Utils::getFAlpha(alpha);
-    maxDiff = Elf64Utils::get10iN(alpha);
+    maxDiff = errorBound;
 }
 
 b64 SerfCompressor::doubleToLongBits(double value) {
