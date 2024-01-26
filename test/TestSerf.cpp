@@ -123,7 +123,8 @@ int main() {
             long totalCompressSize = 0;
 
             while (readBlock(dataSetInputStream, doubleBuffer)) {
-                SerfCompressor compressor = SerfCompressor(alpha);
+                // Use 10^(-a) temporarily
+                SerfCompressor compressor = SerfCompressor(alpha, alphaPrecisionTable[alpha]);
                 SerfDecompressor decompressor = SerfDecompressor();
                 clock_t compressStartTime = clock();
                 for (const auto &item: doubleBuffer) {
