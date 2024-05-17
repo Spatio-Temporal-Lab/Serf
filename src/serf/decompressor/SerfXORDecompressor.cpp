@@ -7,7 +7,7 @@ std::vector<double> SerfXORDecompressor::decompress(const Array<uint8_t> &bs) {
     std::vector<double> values;
     uint64_t value;
     while ((value = readValue()) != Double::doubleToLongBits(Double::NaN)) {
-        values.emplace_back(Double::longBitsToDouble(value) - static_cast<double>(adjustD));
+        values.emplace_back(Double::longBitsToDouble(value));
         storedVal = value;
     }
     return values;
@@ -16,46 +16,27 @@ std::vector<double> SerfXORDecompressor::decompress(const Array<uint8_t> &bs) {
 uint64_t SerfXORDecompressor::readValue() {
     uint64_t value = storedVal;
     int centerBits;
-
-    if (equalWin) {
-        if (in->readInt(1) == 0) {
-            if (in->readInt(1) != 1) {
-                // case 00
-                int leadAndTrail = static_cast<int>(in->readInt(leadingBitsPerValue + trailingBitsPerValue));
-                int lead = leadAndTrail >> trailingBitsPerValue;
-                int trail = ~(0xffffffff << trailingBitsPerValue) & leadAndTrail;
-                storedLeadingZeros = leadingRepresentation[lead];
-                storedTrailingZeros = trailingRepresentation[trail];
-            }
-            centerBits = 64 - storedLeadingZeros - storedTrailingZeros;
-            value = in->readLong(centerBits) << storedTrailingZeros;
-            value = storedVal ^ value;
-        }
-    } else {
-        if (in->readInt(1) == 1) {
-            // case 1
-            centerBits = 64 - storedLeadingZeros - storedTrailingZeros;
-
-            value = in->readLong(centerBits) << storedTrailingZeros;
-            value = storedVal ^ value;
-        } else if (in->readInt(1) == 0) {
-            // case 00
-            int leadAndTrail = static_cast<int>(in->readInt(leadingBitsPerValue + trailingBitsPerValue));
-            int lead = leadAndTrail >> trailingBitsPerValue;
-            int trail = ~(0xffffffff << trailingBitsPerValue) & leadAndTrail;
-            storedLeadingZeros = leadingRepresentation[lead];
-            storedTrailingZeros = trailingRepresentation[trail];
-            centerBits = 64 - storedLeadingZeros - storedTrailingZeros;
-
-            value = in->readLong(centerBits) << storedTrailingZeros;
-            value = storedVal ^ value;
-        }
+    if (in->readInt(1) == 1) {
+        // case 1
+        centerBits = 64 - storedLeadingZeros - storedTrailingZeros;
+        value = in->readLong(centerBits) << storedTrailingZeros;
+        value = storedVal ^ value;
+    } else if (in->readInt(1) == 0) {
+        // case 00
+        int leadAndTrail = static_cast<int>(in->readInt(leadingBitsPerValue + trailingBitsPerValue));
+        int lead = leadAndTrail >> trailingBitsPerValue;
+        int trail = ~(0xffffffff << trailingBitsPerValue) & leadAndTrail;
+        storedLeadingZeros = leadingRepresentation[lead];
+        storedTrailingZeros = trailingRepresentation[trail];
+        centerBits = 64 - storedLeadingZeros - storedTrailingZeros;
+        value = in->readLong(centerBits) << storedTrailingZeros;
+        value = storedVal ^ value;
     }
+
     return value;
 }
 
 void SerfXORDecompressor::updateFlagAndPositionsIfNeeded() {
-    equalWin = in->readBit() == 1;
     if (in->readBit() == 1) {
         updateLeadingRepresentation();
         updateTrailingRepresentation();

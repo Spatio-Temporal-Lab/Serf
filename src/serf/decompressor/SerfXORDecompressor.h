@@ -20,11 +20,9 @@ private:
     Array<int> trailingRepresentation = {0, 22, 28, 32, 36, 40, 42, 46};
     int leadingBitsPerValue = 3;
     int trailingBitsPerValue = 3;
-    bool equalWin = false;
-    long adjustD;
 
 public:
-    explicit SerfXORDecompressor(long adjustD): adjustD(adjustD) {};
+    SerfXORDecompressor() = default;
 
     std::vector<double> decompress(const Array<uint8_t> &bs);
 

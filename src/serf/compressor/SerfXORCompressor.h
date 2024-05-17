@@ -12,7 +12,7 @@
 
 class SerfXORCompressor {
 public:
-    SerfXORCompressor(int capacity, double max_diff, long adjust_digit);
+    SerfXORCompressor(int capacity, double max_diff);
 
     void AddValue(double v);
 
@@ -24,7 +24,6 @@ public:
 
 private:
     const double max_diff_;
-    const long adjust_digit_;
     uint64_t stored_val_ = Double::doubleToLongBits(2);
 
     std::unique_ptr<OutputBitStream> output_buffer_;
@@ -34,9 +33,6 @@ private:
     long stored_compressed_size_in_bits_ = 0;
     int number_of_values_ = 0;
     double stored_compression_ratio_ = 0;
-
-    int equal_vote_ = 0;
-    bool equal_win_ = false;
 
     Array<int> leading_representation_ = {
             0, 0, 0, 0, 0, 0, 0, 0,
