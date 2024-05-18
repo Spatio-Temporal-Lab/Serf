@@ -21,7 +21,7 @@ uint64_t Serf64Utils::findAppLong(double minDouble, double maxDouble, uint64_t s
     uint64_t min = Double::doubleToLongBits(minDouble) & 0x7fffffffffffffffULL; // may be negative zero
     uint64_t max = Double::doubleToLongBits(maxDouble);
     int leadingZeros = __builtin_clzll(min ^ max);
-    uint64_t frontMask = 0xffffffffffffffffULL << (64 - leadingZeros);
+    int64_t frontMask = 0xffffffffffffffff << (64 - leadingZeros);
     int shift = 64 - leadingZeros;
     uint64_t resultLong;
     double diff;
