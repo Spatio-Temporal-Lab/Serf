@@ -20,15 +20,18 @@ uint64_t Serf64Utils::findAppLong(double minDouble, double maxDouble, uint64_t s
                                   double maxDiff, long adjust_digit) {
     uint64_t min = Double::doubleToLongBits(minDouble) & 0x7fffffffffffffffULL; // may be negative zero
     uint64_t max = Double::doubleToLongBits(maxDouble);
-    uint64_t frontMask = 0xffffffffffffffffULL;
+    int leadingZeros = __builtin_clzll(min ^ max);
+    uint64_t frontMask = 0xffffffffffffffffULL << (64 - leadingZeros);
+    int shift = 64 - leadingZeros;
     uint64_t resultLong;
     double diff;
     uint64_t append;
-    for (int i = 1; i <= 64; ++i) {
-        uint64_t mask = frontMask << (64 - i);
-        append = (lastLong & ~mask) | (min & mask);
+    while (shift >= 0) {
+        uint64_t front = frontMask & min;
+        uint64_t rear = (~frontMask) & lastLong;
 
-        if (min <= append && append <= max) {
+        append = rear | front;
+        if (append >= min && append <= max) {
             resultLong = append ^ sign;
             diff = Double::longBitsToDouble(resultLong) - adjust_digit - original;
             if (diff >= -maxDiff && diff <= maxDiff) {
@@ -36,7 +39,7 @@ uint64_t Serf64Utils::findAppLong(double minDouble, double maxDouble, uint64_t s
             }
         }
 
-        append = (append + bw[64 - i]) & 0x7fffffffffffffffL; // may be overflow
+        append = (append + bw[shift]) & 0x7fffffffffffffffL; // may be overflow
         if (append <= max) {    // append must be greater than min
             resultLong = append ^ sign;
             diff = Double::longBitsToDouble(resultLong) - adjust_digit - original;
@@ -44,7 +47,12 @@ uint64_t Serf64Utils::findAppLong(double minDouble, double maxDouble, uint64_t s
                 return resultLong;
             }
         }
+
+        frontMask = frontMask >> 1;
+
+        --shift;
     }
 
-    return Double::doubleToLongBits(original + adjust_digit);    // we do not find a satisfied value, so we return the original value
+    return Double::doubleToLongBits(
+            original + adjust_digit);     // we do not find a satisfied value, so we return the original value
 }
