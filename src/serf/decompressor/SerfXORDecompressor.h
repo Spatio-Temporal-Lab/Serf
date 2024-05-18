@@ -20,6 +20,7 @@ private:
     Array<int> trailingRepresentation = {0, 22, 28, 32, 36, 40, 42, 46};
     int leadingBitsPerValue = 3;
     int trailingBitsPerValue = 3;
+    bool equal_win_;
 
 public:
     SerfXORDecompressor() = default;

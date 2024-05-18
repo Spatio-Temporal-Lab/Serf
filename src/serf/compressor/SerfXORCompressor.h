@@ -84,6 +84,9 @@ private:
 
     int CompressValue(uint64_t value);
     int UpdateFlagAndPositionsIfNeeded();
+
+    int equal_vote_ = 0;
+    bool equal_win_ = false;
 };
 
 #endif // SERF_XOR_COMPRESSOR_H
