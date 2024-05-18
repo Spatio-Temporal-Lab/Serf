@@ -32,7 +32,7 @@
 #include "sz/sz/include/sz.h"
 
 
-const static size_t kBlockSize = 1000;
+const static size_t kBlockSize = 50;
 const static size_t kDoubleSize = 64;
 const static std::string kExportExprTablePrefix = "../../test/";
 const static std::string kExportExprTableFileName = "perf_table.csv";
@@ -71,8 +71,8 @@ const static std::unordered_map<std::string, int> kFileNameToAdjustDigit{
         {"Stocks-USA.csv",     243},
         {"Wind-Speed.csv",     2}
 };
-constexpr static double kMaxDiffList[] = {1.0E-1, 1.0E-2, 1.0E-3, 1.0E-4, 1.0E-5, 1.0E-6, 1.0E-7, 1.0E-8};
-//constexpr static double kMaxDiffList[] = {1.0E-4};
+//constexpr static double kMaxDiffList[] = {1.0E-1, 1.0E-2, 1.0E-3, 1.0E-4, 1.0E-5, 1.0E-6, 1.0E-7, 1.0E-8};
+constexpr static double kMaxDiffList[] = {1.0E-4};
 //constexpr static int kBlockSizeList[] = {50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
 
 static std::string double_to_string_with_precision(double val, size_t precision) {
@@ -438,8 +438,8 @@ void ResetFileStream(std::ifstream &data_set_input_stream_ref) {
 
 PerfRecord PerfSerfXOR(std::ifstream &data_set_input_stream_ref, double max_diff, const std::string &data_set) {
     PerfRecord perf_record;
-    SerfXORCompressor serf_xor_compressor(kBlockSize, max_diff);
-    SerfXORDecompressor serf_xor_decompressor;
+    SerfXORCompressor serf_xor_compressor(kBlockSize, max_diff, kFileNameToAdjustDigit.find(data_set)->second);
+    SerfXORDecompressor serf_xor_decompressor(kFileNameToAdjustDigit.find(data_set)->second);
 
     int block_count = 0;
     std::vector<double> original_data;
@@ -970,7 +970,7 @@ TEST(Perf, All) {
 
     // Export all performance data
 //    ExportTotalExprTable();
-    ExportExprTableWithCompressionRatioNoSpecificDataset();
+//    ExportExprTableWithCompressionRatioNoSpecificDataset();
 //    ExportExprTableWithCompressionTimeNoSpecificDataset();
-//    ExportExprTableWithDecompressionTimeNoSpecificDataset();
+    ExportExprTableWithDecompressionTimeNoSpecificDataset();
 }
