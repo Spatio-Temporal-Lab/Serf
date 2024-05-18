@@ -21,14 +21,16 @@ uint64_t Serf64Utils::findAppLong(double minDouble, double maxDouble, uint64_t s
     uint64_t min = Double::doubleToLongBits(minDouble) & 0x7fffffffffffffffULL; // may be negative zero
     uint64_t max = Double::doubleToLongBits(maxDouble);
     int leadingZeros = __builtin_clzll(min ^ max);
-    uint64_t frontMask = 0xffffffffffffffffULL << (64 - leadingZeros);
-    int shift = 64 - leadingZeros;
+    uint64_t frontMask = 0xffffffffffffffffULL;
+    int bound = 64 - leadingZeros;
     uint64_t resultLong;
     double diff;
     uint64_t append;
-    while (shift >= 0) {
-        uint64_t front = frontMask & min;
-        uint64_t rear = (~frontMask) & lastLong;
+    int shift = leadingZeros;
+    while (shift <= 64) {
+        uint64_t mask = frontMask << (64 - shift);
+        uint64_t front = mask & min;
+        uint64_t rear = (~mask) & lastLong;
 
         append = rear | front;
         if (append >= min && append <= max) {
@@ -39,7 +41,7 @@ uint64_t Serf64Utils::findAppLong(double minDouble, double maxDouble, uint64_t s
             }
         }
 
-        append = (append + bw[shift]) & 0x7fffffffffffffffL; // may be overflow
+        append = (append + bw[64 - shift]) & 0x7fffffffffffffffL; // may be overflow
         if (append <= max) {    // append must be greater than min
             resultLong = append ^ sign;
             diff = Double::longBitsToDouble(resultLong) - original;
@@ -48,9 +50,7 @@ uint64_t Serf64Utils::findAppLong(double minDouble, double maxDouble, uint64_t s
             }
         }
 
-        frontMask = frontMask >> 1;
-
-        --shift;
+        shift++;
     }
 
     return Double::doubleToLongBits(original);    // we do not find a satisfied value, so we return the original value
