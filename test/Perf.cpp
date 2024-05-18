@@ -866,7 +866,7 @@ PerfRecord PerfSZ(std::ifstream &data_set_input_stream_ref, double max_diff) {
         auto decompression_output = new double[kBlockSize];
         auto compression_start_time = std::chrono::steady_clock::now();
         auto compression_output = SZ_compress_args(SZ_DOUBLE, original_data.data(), &compression_output_len,
-                                                   REL, max_diff, 0, 0, 0, 0, 0, 0, original_data.size());
+                                                   REL, 0, max_diff, 0, 0, 0, 0, 0, original_data.size());
         auto compression_end_time = std::chrono::steady_clock::now();
         perf_record.AddCompressedSize(compression_output_len * 8);
         auto decompression_start_time = std::chrono::steady_clock::now();
@@ -971,7 +971,7 @@ TEST(Perf, All) {
 
     // Export all performance data
 //    ExportTotalExprTable();
-//    ExportExprTableWithCompressionRatioNoSpecificDataset();
+    ExportExprTableWithCompressionRatioNoSpecificDataset();
 //    ExportExprTableWithCompressionTimeNoSpecificDataset();
-    ExportExprTableWithDecompressionTimeNoSpecificDataset();
+//    ExportExprTableWithDecompressionTimeNoSpecificDataset();
 }
