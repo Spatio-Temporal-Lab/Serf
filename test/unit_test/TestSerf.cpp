@@ -107,8 +107,8 @@ TEST(TestSerfXOR, CorrectnessTest) {
                 fprintf(stderr, "[Error] Failed to open the file '%s'", dataSet.c_str());
             }
 
-            SerfXORCompressor xor_compressor(1000, max_diff);
-            SerfXORDecompressor xor_decompressor;
+            SerfXORCompressor xor_compressor(1000, max_diff, adjustD);
+            SerfXORDecompressor xor_decompressor(adjustD);
 
             std::vector<double> originalData;
             while ((originalData = readBlock(dataSetInputStream)).size() == BLOCK_SIZE) {

@@ -12,7 +12,7 @@
 
 class SerfXORCompressor {
 public:
-    SerfXORCompressor(int capacity, double max_diff);
+    SerfXORCompressor(int capacity, double max_diff, long adjust_digit);
 
     void AddValue(double v);
 
@@ -24,6 +24,7 @@ public:
 
 private:
     const double max_diff_;
+    const long adjust_digit_;
     uint64_t stored_val_ = Double::doubleToLongBits(2);
 
     std::unique_ptr<OutputBitStream> output_buffer_;

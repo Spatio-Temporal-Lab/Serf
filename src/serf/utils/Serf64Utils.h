@@ -7,11 +7,11 @@
 
 class Serf64Utils {
 public:
-    static uint64_t findAppLong(double min, double max, double v, uint64_t lastLong, double maxDiff);
+    static uint64_t findAppLong(double min, double max, double v, uint64_t lastLong, double maxDiff, long adjust_digit);
 
 private:
     static uint64_t
-    findAppLong(double minDouble, double maxDouble, uint64_t sign, double original, uint64_t lastLong, double maxDiff);
+    findAppLong(double minDouble, double maxDouble, uint64_t sign, double original, uint64_t lastLong, double maxDiff, long adjust_digit);
 
     static constexpr uint64_t bw[64] = {
             1ULL, 2ULL, 4ULL, 8ULL, 16ULL, 32ULL, 64ULL, 128ULL,

@@ -11,7 +11,7 @@ Array<uint8_t> NetSerfXORCompressor::compress(double v) {
     if (std::abs(Double::longBitsToDouble(storedVal) - adjustD - v) > maxDiff) {
         // in our implementation, we do not consider special cases and overflow case
         double adjustValue = v + adjustD;
-        thisVal = Serf64Utils::findAppLong(adjustValue - maxDiff, adjustValue + maxDiff, v, storedVal, maxDiff);
+        thisVal = Serf64Utils::findAppLong(adjustValue - maxDiff, adjustValue + maxDiff, v, storedVal, maxDiff, adjustD);
     } else {
         // let current value be the last value, making an XORed value of 0.
         thisVal = storedVal;

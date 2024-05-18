@@ -12,6 +12,7 @@
 
 class SerfXORDecompressor {
 private:
+    const long adjust_digit_;
     uint64_t storedVal = Double::doubleToLongBits(2);
     int storedLeadingZeros = std::numeric_limits<int>::max();
     int storedTrailingZeros = std::numeric_limits<int>::max();
@@ -22,7 +23,7 @@ private:
     int trailingBitsPerValue = 3;
 
 public:
-    SerfXORDecompressor() = default;
+    explicit SerfXORDecompressor(long adjust_digit): adjust_digit_(adjust_digit) {};
 
     std::vector<double> decompress(const Array<uint8_t> &bs);
 

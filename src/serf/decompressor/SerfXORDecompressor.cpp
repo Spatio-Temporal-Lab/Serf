@@ -7,7 +7,7 @@ std::vector<double> SerfXORDecompressor::decompress(const Array<uint8_t> &bs) {
     std::vector<double> values;
     uint64_t value;
     while ((value = readValue()) != Double::doubleToLongBits(Double::NaN)) {
-        values.emplace_back(Double::longBitsToDouble(value));
+        values.emplace_back(Double::longBitsToDouble(value) - adjust_digit_);
         storedVal = value;
     }
     return values;
