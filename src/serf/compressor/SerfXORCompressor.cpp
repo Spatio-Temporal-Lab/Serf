@@ -1,11 +1,15 @@
 #include "SerfXORCompressor.h"
 
-SerfXORCompressor::SerfXORCompressor(int capacity, double max_diff, long adjust_digit) : max_diff_(max_diff), adjust_digit_(adjust_digit) {
+SerfXORCompressor::SerfXORCompressor(int capacity, double max_diff, long adjust_digit, CompressionMode mode)
+        : max_diff_(max_diff), adjust_digit_(adjust_digit), mode_(mode) {
+    if (mode_ == SERF_MODE_REL) rel_max_diff = max_diff_;
     output_buffer_ = std::make_unique<OutputBitStream>(std::floor(((capacity + 1) * 8 + capacity / 8 + 1) * 1.2));
     compressed_size_in_bits_ = output_buffer_->writeInt(0, 2);
 }
 
 void SerfXORCompressor::AddValue(double v) {
+    if (mode_ == SERF_MODE_REL) max_diff_ = rel_max_diff * std::abs(v);
+
     uint64_t this_val;
     // note we cannot let > max_diff_, because NaN - v > max_diff_ is always false
     if (__builtin_expect(std::abs(Double::longBitsToDouble(stored_val_) - adjust_digit_ - v) > max_diff_, false)) {

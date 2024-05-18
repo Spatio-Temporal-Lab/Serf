@@ -107,7 +107,7 @@ TEST(TestSerfXOR, CorrectnessTest) {
                 fprintf(stderr, "[Error] Failed to open the file '%s'", dataSet.c_str());
             }
 
-            SerfXORCompressor xor_compressor(1000, max_diff, adjustD);
+            SerfXORCompressor xor_compressor(1000, max_diff, adjustD, SerfXORCompressor::SERF_MODE_REL);
             SerfXORDecompressor xor_decompressor(adjustD);
 
             std::vector<double> originalData;
@@ -120,10 +120,10 @@ TEST(TestSerfXOR, CorrectnessTest) {
                 std::vector<double> decompressed = xor_decompressor.decompress(result);
                 EXPECT_EQ(originalData.size(), decompressed.size());
                 for (int i = 0; i < BLOCK_SIZE; ++i) {
-                    if (std::abs(originalData[i] - decompressed[i]) > max_diff) {
+                    if (std::abs(originalData[i] - decompressed[i]) > max_diff * std::abs(originalData[i])) {
                         GTEST_LOG_(INFO) << originalData[i] << " " << decompressed[i] << " " << max_diff;
                     }
-                    EXPECT_TRUE(std::abs(originalData[i] - decompressed[i]) <= max_diff);
+                    EXPECT_TRUE(std::abs(originalData[i] - decompressed[i]) <= max_diff * std::abs(originalData[i]));
                 }
             }
 

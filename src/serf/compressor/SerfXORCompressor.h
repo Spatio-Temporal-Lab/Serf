@@ -12,7 +12,12 @@
 
 class SerfXORCompressor {
 public:
-    SerfXORCompressor(int capacity, double max_diff, long adjust_digit);
+    enum CompressionMode {
+        SERF_MODE_ABS,
+        SERF_MODE_REL
+    };
+
+    SerfXORCompressor(int capacity, double max_diff, long adjust_digit, CompressionMode mode);
 
     void AddValue(double v);
 
@@ -23,7 +28,9 @@ public:
     void Close();
 
 private:
-    const double max_diff_;
+    const CompressionMode mode_;
+    double max_diff_;
+    double rel_max_diff;
     const long adjust_digit_;
     uint64_t stored_val_ = Double::doubleToLongBits(2);
 

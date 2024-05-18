@@ -438,7 +438,7 @@ void ResetFileStream(std::ifstream &data_set_input_stream_ref) {
 
 PerfRecord PerfSerfXOR(std::ifstream &data_set_input_stream_ref, double max_diff, const std::string &data_set) {
     PerfRecord perf_record;
-    SerfXORCompressor serf_xor_compressor(kBlockSize, max_diff, kFileNameToAdjustDigit.find(data_set)->second);
+    SerfXORCompressor serf_xor_compressor(kBlockSize, max_diff, kFileNameToAdjustDigit.find(data_set)->second, SerfXORCompressor::CompressionMode::SERF_MODE_REL);
     SerfXORDecompressor serf_xor_decompressor(kFileNameToAdjustDigit.find(data_set)->second);
 
     int block_count = 0;
@@ -970,7 +970,7 @@ TEST(Perf, All) {
 
     // Export all performance data
 //    ExportTotalExprTable();
-    ExportExprTableWithCompressionRatioNoSpecificDataset();
+//    ExportExprTableWithCompressionRatioNoSpecificDataset();
 //    ExportExprTableWithCompressionTimeNoSpecificDataset();
-//    ExportExprTableWithDecompressionTimeNoSpecificDataset();
+    ExportExprTableWithDecompressionTimeNoSpecificDataset();
 }
