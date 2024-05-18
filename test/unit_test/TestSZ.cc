@@ -78,16 +78,16 @@ TEST(TestSZ, CorrectnessTest) {
                 size_t compression_output_len;
                 auto decompression_output = new double[BLOCK_SIZE];
                 auto compression_output = SZ_compress_args(SZ_DOUBLE, originalData.data(), &compression_output_len,
-                                                           ABS, max_diff * 0.99, 0, 0, 0, 0, 0, 0, originalData.size());
+                                                           REL, max_diff, 0, 0, 0, 0, 0, 0, originalData.size());
                 size_t decompression_output_len = SZ_decompress_args(SZ_DOUBLE, compression_output,
                                                                      compression_output_len, decompression_output, 0, 0,
                                                                      0, 0, BLOCK_SIZE);
                 EXPECT_EQ(originalData.size(), decompression_output_len);
                 for (int i = 0; i < BLOCK_SIZE; ++i) {
-                    if (std::abs(originalData[i] - decompression_output[i]) > max_diff) {
+                    if (std::abs(originalData[i] - decompression_output[i]) > max_diff * std::abs(originalData[i])) {
                         GTEST_LOG_(INFO) << originalData[i] << " " << decompression_output[i] << " " << max_diff;
                     }
-                    EXPECT_TRUE(std::abs(originalData[i] - decompression_output[i]) <= max_diff);
+                    EXPECT_TRUE(std::abs(originalData[i] - decompression_output[i]) <= max_diff * std::abs(originalData[i]));
                 }
 
                 delete[] decompression_output;

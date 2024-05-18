@@ -72,8 +72,9 @@ const static std::unordered_map<std::string, int> kFileNameToAdjustDigit{
         {"Wind-Speed.csv",     2}
 };
 //constexpr static double kMaxDiffList[] = {1.0E-1, 1.0E-2, 1.0E-3, 1.0E-4, 1.0E-5, 1.0E-6, 1.0E-7, 1.0E-8};
-constexpr static double kMaxDiffList[] = {1.0E-4};
+//constexpr static double kMaxDiffList[] = {1.0E-4};
 //constexpr static int kBlockSizeList[] = {50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
+constexpr static double kMaxDiffList[] = {0.001, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5};
 
 static std::string double_to_string_with_precision(double val, size_t precision) {
     std::ostringstream stringBuffer;
@@ -865,7 +866,7 @@ PerfRecord PerfSZ(std::ifstream &data_set_input_stream_ref, double max_diff) {
         auto decompression_output = new double[kBlockSize];
         auto compression_start_time = std::chrono::steady_clock::now();
         auto compression_output = SZ_compress_args(SZ_DOUBLE, original_data.data(), &compression_output_len,
-                                                   ABS, max_diff * 0.99, 0, 0, 0, 0, 0, 0, original_data.size());
+                                                   REL, max_diff, 0, 0, 0, 0, 0, 0, original_data.size());
         auto compression_end_time = std::chrono::steady_clock::now();
         perf_record.AddCompressedSize(compression_output_len * 8);
         auto decompression_start_time = std::chrono::steady_clock::now();
@@ -940,9 +941,9 @@ TEST(Perf, All) {
 //            expr_table.insert(std::make_pair(ExprConf("Machete", data_set, max_diff),
 //                                             PerfMachete(data_set_input_stream, max_diff)));
 //            ResetFileStream(data_set_input_stream);
-//            expr_table.insert(
-//                    std::make_pair(ExprConf("SZ", data_set, max_diff), PerfSZ(data_set_input_stream, max_diff)));
-//            ResetFileStream(data_set_input_stream);
+            expr_table.insert(
+                    std::make_pair(ExprConf("SZ", data_set, max_diff), PerfSZ(data_set_input_stream, max_diff)));
+            ResetFileStream(data_set_input_stream);
         }
 
         // Lossless
