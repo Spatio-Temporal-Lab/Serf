@@ -21,6 +21,7 @@ private:
     Array<int> trailingRepresentation = {0, 22, 28, 32, 36, 40, 42, 46};
     int leadingBitsPerValue = 3;
     int trailingBitsPerValue = 3;
+    bool equalWin = false;
 
 public:
     explicit SerfXORDecompressor(long adjust_digit): adjust_digit_(adjust_digit) {};
