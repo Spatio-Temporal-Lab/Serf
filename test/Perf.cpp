@@ -32,7 +32,7 @@
 #include "sz/sz/include/sz.h"
 
 
-const static size_t kBlockSize = 50;
+const static size_t kBlockSize = 1000;
 const static size_t kDoubleSize = 64;
 const static std::string kExportExprTablePrefix = "../../test/";
 const static std::string kExportExprTableFileName = "perf_table.csv";
@@ -74,7 +74,8 @@ const static std::unordered_map<std::string, int> kFileNameToAdjustDigit{
 //constexpr static double kMaxDiffList[] = {1.0E-1, 1.0E-2, 1.0E-3, 1.0E-4, 1.0E-5, 1.0E-6, 1.0E-7, 1.0E-8};
 //constexpr static double kMaxDiffList[] = {1.0E-4};
 //constexpr static int kBlockSizeList[] = {50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
-constexpr static double kMaxDiffList[] = {0.001, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5};
+//constexpr static double kMaxDiffList[] = {0.001, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5};
+constexpr static double kMaxDiffList[] = {0.01};
 
 static std::string double_to_string_with_precision(double val, size_t precision) {
     std::ostringstream stringBuffer;
@@ -971,7 +972,7 @@ TEST(Perf, All) {
 
     // Export all performance data
 //    ExportTotalExprTable();
-    ExportExprTableWithCompressionRatioNoSpecificDataset();
+//    ExportExprTableWithCompressionRatioNoSpecificDataset();
 //    ExportExprTableWithCompressionTimeNoSpecificDataset();
-//    ExportExprTableWithDecompressionTimeNoSpecificDataset();
+    ExportExprTableWithDecompressionTimeNoSpecificDataset();
 }
