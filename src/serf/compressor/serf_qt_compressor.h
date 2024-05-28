@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cmath>
 #include <memory>
+#include <fstream>
 
 #include "serf/utils/output_bit_stream.h"
 #include "serf/utils/array.h"
@@ -30,6 +31,7 @@ class SerfQtCompressor {
   long get_compressed_size_in_bits() const;
 
  private:
+  std::ofstream qt_result_output_;
   const double kMaxDiff;
   const int kBlockSize;
   bool first_ = true;

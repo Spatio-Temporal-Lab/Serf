@@ -177,6 +177,30 @@ TEST(TestSerfQt, CorrectnessTest) {
   }
 }
 
+TEST(TestSerfQt, GetQtResult) {
+  std::string data_set = kDataSetList[5];
+  double max_diff = 1.0E-6;
+
+  std::ifstream data_set_input_stream(kDataSetDirPrefix + data_set);
+  if (!data_set_input_stream.is_open()) {
+    std::cerr << "Failed to open the file [" << data_set << "]" << std::endl;
+  }
+
+  SerfQtCompressor qt_compressor(100000, max_diff);
+  SerfQtDecompressor qt_decompressor;
+
+  std::vector<double> original_data;
+  while ((original_data = ReadBlock(data_set_input_stream)).size() == kBlockSize) {
+    for (const auto &datum : original_data) {
+      qt_compressor.AddValue(datum);
+    }
+  }
+  qt_compressor.Close();
+  qt_compressor.compressed_bytes();
+
+  data_set_input_stream.close();
+}
+
 TEST(TestNetSerfXOR, CorrectnessTest) {
   for (const auto &data_set : kDataSetList) {
     std::ifstream data_set_input_stream(kDataSetDirPrefix + data_set);

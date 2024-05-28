@@ -2,6 +2,7 @@
 
 SerfQtCompressor::SerfQtCompressor(int block_size, double max_diff) :kBlockSize(block_size), kMaxDiff(max_diff * 0.999) {
   output_bit_stream_ = std::make_unique<OutputBitStream>(2 * block_size * 8);
+  qt_result_output_.open("qt_result.txt");
 }
 
 void SerfQtCompressor::AddValue(double v) {
@@ -11,6 +12,7 @@ void SerfQtCompressor::AddValue(double v) {
     compressed_size_in_bits_ += output_bit_stream_->WriteLong(Double::DoubleToLongBits(kMaxDiff), 64);
   }
   long q = static_cast<long>(std::round((v - pre_value_) / (2 * kMaxDiff)));
+  qt_result_output_ << ZigZagCodec::Encode(static_cast<int64_t>(q)) + 1 << std::endl;
   double recoverValue = pre_value_ + 2 * kMaxDiff * static_cast<double>(q);
   compressed_size_in_bits_ += EliasDeltaCodec::Encode(ZigZagCodec::Encode(static_cast<int64_t>(q)) + 1,
                                                       output_bit_stream_.get());
@@ -18,10 +20,12 @@ void SerfQtCompressor::AddValue(double v) {
 }
 
 Array<uint8_t> SerfQtCompressor::compressed_bytes() {
+  qt_result_output_.close();
   return compressed_bytes_;
 }
 
 void SerfQtCompressor::Close() {
+  qt_result_output_.flush();
   output_bit_stream_->Flush();
   compressed_bytes_ = output_bit_stream_->GetBuffer(std::ceil(compressed_size_in_bits_ / 8.0));
   output_bit_stream_->Refresh();
