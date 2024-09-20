@@ -110,7 +110,7 @@ else ()
     message(STATUS "ZSTD_MULTITHREAD_SUPPORT is disabled")
 endif ()
 
-option(ZSTD_BUILD_PROGRAMS "BUILD PROGRAMS" ON)
+option(ZSTD_BUILD_PROGRAMS "BUILD PROGRAMS" OFF)
 option(ZSTD_BUILD_CONTRIB "BUILD CONTRIB" OFF)
 
 # Respect the conventional CMake option for enabling tests if it was specified on the first configure
@@ -143,29 +143,6 @@ endif ()
 add_subdirectory(lib)
 
 option(ZSTD_PROGRAMS_LINK_SHARED "PROGRAMS LINK SHARED" OFF)
-
-if (ZSTD_BUILD_PROGRAMS)
-    if (NOT ZSTD_BUILD_STATIC AND NOT ZSTD_PROGRAMS_LINK_SHARED)
-        message(SEND_ERROR "You need to build static library to build zstd CLI")
-    elseif(NOT ZSTD_BUILD_SHARED AND ZSTD_PROGRAMS_LINK_SHARED)
-        message(SEND_ERROR "You need to build shared library to build zstd CLI")
-    endif ()
-
-    add_subdirectory(programs)
-endif ()
-
-if (ZSTD_BUILD_TESTS)
-    enable_testing()
-    if (NOT ZSTD_BUILD_STATIC)
-        message(SEND_ERROR "You need to build static library to build tests")
-    endif ()
-
-    add_subdirectory(tests)
-endif ()
-
-if (ZSTD_BUILD_CONTRIB)
-    add_subdirectory(contrib)
-endif ()
 
 #-----------------------------------------------------------------------------
 # Add clean-all target
