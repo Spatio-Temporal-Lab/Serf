@@ -2,6 +2,7 @@
 #define SERF_ALL_TEST_PERF_EXPR_CONFIG_HPP_
 
 #include <string>
+#include <unordered_map>
 
 // File config
 const static std::string kExportExprTablePrefix = "../../test/";

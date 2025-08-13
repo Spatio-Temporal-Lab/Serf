@@ -1,6 +1,9 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.15)
 
 project(PerfTest)
+
+# Set C++ standard version
+set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(baselines/deflate)
 add_subdirectory(baselines/fpc)
@@ -11,7 +14,6 @@ add_subdirectory(baselines/elf)
 add_subdirectory(baselines/machete)
 add_subdirectory(baselines/lz77)
 add_subdirectory(baselines/sz2)
-add_subdirectory(baselines/buff)
 add_subdirectory(baselines/snappy)
 add_subdirectory(baselines/zstd/build/cmake)
 add_subdirectory(baselines/sim_piece)

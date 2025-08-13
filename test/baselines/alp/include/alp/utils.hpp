@@ -5,6 +5,7 @@
 #include "encode.hpp"
 #include <cmath>
 #include <random>
+#include <new>
 
 namespace alp {
 struct AlpApiUtils {
