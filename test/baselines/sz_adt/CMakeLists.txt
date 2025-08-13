@@ -1,10 +1,6 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 
 PROJECT(SZ_ADT)
-
-# include
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/sz/inc ${CMAKE_CURRENT_SOURCE_DIR}/zstd/
-        ${CMAKE_CURRENT_SOURCE_DIR}/zstd/common/)
 
 # source
 AUX_SOURCE_DIRECTORY(sz/src           SRC1)
@@ -15,7 +11,11 @@ AUX_SOURCE_DIRECTORY(zstd/decompress  SRC5)
 AUX_SOURCE_DIRECTORY(zstd/deprecated  SRC6)
 AUX_SOURCE_DIRECTORY(zstd/legacy      SRC7)
 
-
 # archive
 ADD_LIBRARY(TSZ SHARED ${SRC1} ${SRC2} ${SRC3} ${SRC4} ${SRC5} ${SRC6} ${SRC7})
-TARGET_INCLUDE_DIRECTORIES(TSZ PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/sz/inc ${TD_SOURCE_DIR}/include)
+TARGET_INCLUDE_DIRECTORIES(TSZ PUBLIC
+                        ${CMAKE_CURRENT_SOURCE_DIR}/sz/inc
+                        ${TD_SOURCE_DIR}/include
+                        ${CMAKE_CURRENT_SOURCE_DIR}/zstd
+                        ${CMAKE_CURRENT_SOURCE_DIR}/zstd/common
+)

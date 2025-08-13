@@ -29,14 +29,14 @@ typedef struct _DecodeInfo {
     uint8_t nbits;
 } DecodeInfo;
 
-static const EncodeInfo kDistanceEncode_128_10b[128] {
+static constexpr EncodeInfo kDistanceEncode_128_10b[128] {
 
 };
-static const DecodeInfo kDistanceDecode_128_10b[1024] {
+static constexpr DecodeInfo kDistanceDecode_128_10b[1024] {
 
 };
 
-static const EncodeInfo kDistanceEncode_256_10b[256] {
+static constexpr EncodeInfo kDistanceEncode_256_10b[256] {
 
 };
 // static const DecodeInfo kDistanceDecode_256_10b[1024] {  // TODO uncomment

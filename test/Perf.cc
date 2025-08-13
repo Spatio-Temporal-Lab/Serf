@@ -800,48 +800,6 @@ void PerfElf(std::ifstream &data_set_input_stream_ref, double max_diff, int bloc
   ResetFileStream(data_set_input_stream_ref);
 }
 
-void PerfElfStar(std::ifstream &data_set_input_stream_ref, double max_diff, int block_size,
-             const std::string &data_set, ExprTable &table_to_insert) {
-  PerfRecord perf_record;
-
-  int block_count = 0;
-  std::vector<double> original_data;
-
-  while ((original_data = ReadBlock(data_set_input_stream_ref, block_size)).size() == block_size) {
-    ++block_count;
-
-    uint8_t *compression_output_buffer;
-    double *decompression_output = new double[block_size];
-    ssize_t compression_output_len_in_bytes;
-    ssize_t decompression_len;
-
-    auto compression_start_time = std::chrono::steady_clock::now();
-    compression_output_len_in_bytes = elf_star_encode(original_data.data(), original_data.size(),
-                                                 &compression_output_buffer, 0);
-    auto compression_end_time = std::chrono::steady_clock::now();
-
-    perf_record.AddCompressedSize(compression_output_len_in_bytes * 8);
-
-    auto decompression_start_time = std::chrono::steady_clock::now();
-    decompression_len = elf_star_decode(compression_output_buffer, compression_output_len_in_bytes, decompression_output,
-                                   0);
-    delete[] decompression_output;
-    auto decompression_end_time = std::chrono::steady_clock::now();
-
-    auto compression_time_in_a_block = std::chrono::duration_cast<std::chrono::microseconds>(
-        compression_end_time - compression_start_time);
-    auto decompression_time_in_a_block = std::chrono::duration_cast<std::chrono::microseconds>(
-        decompression_end_time - decompression_start_time);
-
-    perf_record.IncreaseCompressionTime(compression_time_in_a_block);
-    perf_record.IncreaseDecompressionTime(decompression_time_in_a_block);
-  }
-
-  perf_record.set_block_count(block_count);
-  table_to_insert.insert(std::make_pair(ExprConf("Elf", data_set, block_size, max_diff), perf_record));
-  ResetFileStream(data_set_input_stream_ref);
-}
-
 void PerfChimp128(std::ifstream &data_set_input_stream_ref, double max_diff, int block_size,
                   const std::string &data_set, ExprTable &table_to_insert) {
   PerfRecord perf_record;
@@ -2207,7 +2165,6 @@ TEST(Perf, TSBS) {
     PerfChimp128(data_input_stream, kMaxDiffTSBS, kBlockSizeTSBS, data_set, expr_table_tsbs);
     PerfDeflate(data_input_stream, kMaxDiffTSBS, kBlockSizeTSBS, data_set, expr_table_tsbs);
     PerfElf(data_input_stream, kMaxDiffTSBS, kBlockSizeTSBS, data_set, expr_table_tsbs);
-    PerfElfStar(data_input_stream, kMaxDiffTSBS, kBlockSizeTSBS, data_set, expr_table_tsbs);
     PerfFPC(data_input_stream, kMaxDiffTSBS, kBlockSizeTSBS, data_set, expr_table_tsbs);
     PerfLZ4(data_input_stream, kMaxDiffTSBS, kBlockSizeTSBS, data_set, expr_table_tsbs);
     PerfSerfXOR(data_input_stream, kMaxDiffTSBS, kBlockSizeTSBS, data_set, expr_table_tsbs);

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.15)
 
 project(Serf-All)
 
@@ -19,10 +19,14 @@ else()
     message(STATUS "[SelfCheck] Host System: Unknown")
 endif(WIN32)
 
+# Serf library
 add_subdirectory(src)
+
 # To run perf programs and unit tests
 add_subdirectory(test)
 
-# If Python API and JAVA API are needed
-add_subdirectory(pywrapper)
-# add_subdirectory(jna)
+# Serf command line interface
+add_subdirectory(serf_cmd)
+
+# Uncomment this line to use Python interface of Serf
+# add_subdirectory(pywrapper)
